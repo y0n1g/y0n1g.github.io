@@ -15,7 +15,7 @@ tags: [git,github]
 - 切换分支时，要把本地的修改先提交**或隐藏(stash)**以保证本地干净。否则git会因为冲突阻止切换。
 
 
-#常用命令
+# 常用命令
 
 大部分内容来自于： http://git-scm.com/book/en/v2
 

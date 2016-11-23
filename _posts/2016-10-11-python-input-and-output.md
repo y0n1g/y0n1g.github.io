@@ -4,8 +4,8 @@ title: Python 输入输出
 category: python
 ---
 {% include JB/setup %}
-#输入
-##命令行输入: getopt
+# 输入
+## 命令行输入: getopt
 
 **先引用**
 
@@ -40,12 +40,12 @@ category: python
 
 
 
-##交互式输入： raw_input()
+## 交互式输入： raw_input()
 
     user = raw_input('Enter login name: ')
 
-#输出：
-##print()
+# 输出：
+## print()
 使用方法跟C的print类似.
 
     print '%f miles is the same as %f km' % (miles, kilometers)

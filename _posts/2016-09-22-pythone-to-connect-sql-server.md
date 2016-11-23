@@ -6,11 +6,11 @@ category: python
 {% include JB/setup %}
 
 
-#工具
+# 工具
 需要使用pypyodbc，安装很简单：
 pip install pypyodbc
 
-#连接
+# 连接
 import pypyodbc
 connection = pypyodbc.connect(
     '''
@@ -25,7 +25,7 @@ cursor = connection.cursor()
 注意，pypyodbc提到了与pyodbc兼容，pyodbc的连接字符串是：https://code.google.com/p/pyodbc/wiki/ConnectionStrings
 
 
-#获取数据 SQL语句就是一个长的字符串
+# 获取数据 SQL语句就是一个长的字符串
 SQLCommand = (
     '''
     SELECT *
@@ -35,7 +35,7 @@ SQLCommand = (
     ''')
 cursor.execute(SQLCommand)
 
-#处理数据
+# 处理数据
 results = cursor.fetchone()
 while results:
     process_function(results)
