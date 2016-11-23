@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 在linux上配置python访问MS SQL Server
-category: linux, python, database
+category: [linux, python, database]
 ---
 {% include JB/setup %}
 

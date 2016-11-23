@@ -1,7 +1,7 @@
 ---
 title: MySQL 安装与配置
 category: database, mysql
-layout: post
+layout: [mysql, database]
 ---
 {% include JB/setup %}
 # 环境:
