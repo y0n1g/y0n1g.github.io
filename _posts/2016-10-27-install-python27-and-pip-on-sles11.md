@@ -5,7 +5,7 @@ category: python
 ---
 {% include JB/setup %}
 
-#[在SLES11上安装python2.7]
+# [在SLES11上安装python2.7]
 这个脚本来自stackoverflow
 
     #!/bin/bash
@@ -28,7 +28,7 @@ category: python
     #rm -rf tmp
 
 
-#[安装pip](https://www.fir3net.com/Programming/Python/how-to-install-easyinstall-27-and-pip-27.html)
+# [安装pip](https://www.fir3net.com/Programming/Python/how-to-install-easyinstall-27-and-pip-27.html)
 
     wget --no-check-certificate http://pypi.python.org/packages/source/d/distribute/distribute-0.6.35.tar.gz
     tar xf distribute-0.6.35.tar.gz
