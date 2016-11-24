@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 在SLES11上安装python2.7和pip
-category: python
+category: [python]
 ---
 {% include JB/setup %}
 

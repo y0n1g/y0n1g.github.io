@@ -1,7 +1,7 @@
 ---
 layout: post
 title: python的列表和元组
-category: python
+category: [python]
 ---
 {% include JB/setup %}
 # 种类

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Python 输入输出
-category: python
+category: [python]
 ---
 {% include JB/setup %}
 # 输入
