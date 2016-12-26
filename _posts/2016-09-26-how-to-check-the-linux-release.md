@@ -1,7 +1,7 @@
 ---
-layout: post
 title: 如何识别当前的linux版本？
 category: [linux]
+layout: post
 ---
 {% include JB/setup %}
 

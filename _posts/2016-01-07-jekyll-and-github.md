@@ -1,8 +1,8 @@
 ---
-layout: post
 title: 使用jekyll和github的一些细节
-category: tech
+category: [tech]
 tags: [jekyll,github]
+layout: post
 ---
 {% include JB/setup %}
 这里列出一些在github上使用jekyll作为blog server的小技巧或者曾经遇到的问题。

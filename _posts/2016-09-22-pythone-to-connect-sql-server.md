@@ -1,7 +1,7 @@
 ---
-layout: post
 title: 使用python访问SQL Server数据库
 category: [python, mssql]
+layout: post
 ---
 {% include JB/setup %}
 

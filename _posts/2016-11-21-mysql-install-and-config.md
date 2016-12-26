@@ -1,7 +1,7 @@
 ---
 title: MySQL 安装与配置
-category: database, mysql
-layout: [mysql, database]
+category: [database, mysql]
+layout: post
 ---
 {% include JB/setup %}
 # 环境:
@@ -30,6 +30,10 @@ SLES11.SP2
     You can test the MySQL daemon with mysql-test package
     Please report any problems with the /usr/bin/mysqlbug script!
     Starting service MySQL                                      
+
+注意,如果在ubuntu上用apt-cache安装,默认不允许root在localhost登录
+
+    ERROR 1698 (28000): Access denied for user 'root'@'localhost'
     
 # 开始使用:
 现在就可以用mysql进入交互式界面了:
@@ -42,7 +46,7 @@ SLES11.SP2
 
 创建数据库:
 
-    mysql>  CREATE DATABASE your_database;
+    mysql>  CREATE DATABASE your_database CHARACTER SET utf8;
 
 赋予用户权限:
 

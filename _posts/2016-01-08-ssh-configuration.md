@@ -1,8 +1,8 @@
 ---
-layout: post
 title: ssh配置
-category : tech
 tags : [ssh]
+category : [tech]
+layout: post
 ---
 {% include JB/setup %}
 - 可以指定用某个key访问某些地址。配置文件是 ~/.ssh/config 例如：

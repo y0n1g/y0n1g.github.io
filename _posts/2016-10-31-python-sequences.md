@@ -1,7 +1,7 @@
 ---
-layout: post
 title: python sequences
 category: [python]
+layout: post
 ---
 {% include JB/setup %}
 # Sequences

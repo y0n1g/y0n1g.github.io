@@ -1,7 +1,7 @@
 ---
 title: 用python访问mysql
-layout: post
 category: [python, mysql]
+layout: post
 ---
 {% include JB/setup %}
 # 准备连接器
@@ -33,3 +33,16 @@ category: [python, mysql]
 但是在linux上的名字不一样.python官网包名为[mysql-python](https://pypi.python.org/pypi/MySQL-python/).安装python的软件包:
 
     pip install mysql-python
+
+## 其他API
+其实还有很多API可以用.
+
+    MySQL-Python
+    PyMySQL
+    MySQL Connector/Python
+    CyMySQL
+    OurSQL
+    Google Cloud SQL
+    PyODBC
+    zxjdbc for Jython
+    

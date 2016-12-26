@@ -1,7 +1,7 @@
 ---
-layout: post
 title: Python 输入输出
 category: [python]
+layout: post
 ---
 {% include JB/setup %}
 # 输入
