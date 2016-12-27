@@ -1,7 +1,8 @@
 ---
 title: Python 输入输出
-category: [python]
 layout: post
+category: [tech]
+tags: [python]
 ---
 {% include JB/setup %}
 # 输入

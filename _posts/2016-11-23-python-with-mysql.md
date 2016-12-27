@@ -1,7 +1,8 @@
 ---
 title: 用python访问mysql
-category: [python, mysql]
 layout: post
+category: [tech]
+tags: [python, mysql]
 ---
 {% include JB/setup %}
 # 准备连接器

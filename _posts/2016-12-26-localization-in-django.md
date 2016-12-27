@@ -43,8 +43,24 @@ tags: [django,python]
     This will have {{ myvar }} inside.
     {% endblocktrans %}
 
+# 配置django
+只有一步,需要告知django把翻译文件放在哪里(在哪里寻找). 默认的settigns文件没有这个项(结构类似template的配置):
+
+    LOCALE_PATHS=(
+        os.path.join(BASE_DIR, 'locale'),
+    )
+    
+
 # 翻译文字
 1. 为某一种语言创建一个信息文件
 
     python manage.py makemessages -l zh
+    _结果会创建locale以及相应的zh目录和文件._
+    __注意,为了给某个app创建翻译,可以在app目录下运行如下命令:_
+    django-admin makemessages -l zh
 
+
+# tips
+注意,views中访问的model的域,可能不是数据库中的定义或者最终的显示.  
+比如在admin的界面中,list_display的字段并不是用于显示的,添加翻译指令不管用.
+在正确的位置,添加指示,是关键... 哪里是正确位子呢?

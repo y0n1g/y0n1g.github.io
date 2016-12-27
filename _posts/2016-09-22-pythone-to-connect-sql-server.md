@@ -1,7 +1,8 @@
 ---
 title: 使用python访问SQL Server数据库
-category: [python, mssql]
 layout: post
+category: [tech]
+tags: [python, mssql]
 ---
 {% include JB/setup %}
 

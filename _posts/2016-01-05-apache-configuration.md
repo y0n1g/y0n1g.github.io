@@ -1,8 +1,8 @@
 ---
 title: "apache的一些常见配置项"
+layout: post
 category: [tech]
 tags : [apache,http]
-layout: post
 ---
 {% include JB/setup %}
 # apache 的一些常见配置项

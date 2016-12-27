@@ -1,8 +1,8 @@
 ---
 title: git使用
+layout: post
 category: [tech]
 tags: [git,github]
-layout: post
 ---
 {% include JB/setup %}
 

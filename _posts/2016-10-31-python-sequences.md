@@ -1,7 +1,8 @@
 ---
 title: python sequences
-category: [python]
 layout: post
+category: [tech]
+tags: [python]
 ---
 {% include JB/setup %}
 # Sequences

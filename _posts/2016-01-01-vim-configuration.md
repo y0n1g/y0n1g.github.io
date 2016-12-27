@@ -1,8 +1,8 @@
 ---
 title: vim配置
+layout: post
 category : [tech]
 tags : [vim]
-layout: post
 ---
 {% include JB/setup %}
 

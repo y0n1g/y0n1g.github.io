@@ -37,3 +37,12 @@ django会在project级别的templates目录下搜索, 然后再在各个app下�
 + middleware的执行顺序
 django的setting中,middleware是一个多元组. 对于response和异常处理: 执行顺序是**从后(下)至前(上)**. 因此,如果需要某个middleware稍后执行,则在setting中需要放在相应考前(上)的位置.  对于request和view阶段:执行顺序是** 从前(上)至后(下)**!
 
+
+# 遗留问题
+1. 如何配置不同的app访问不同的数据库? 或者不同的model使用不同的数据库?
+
+    django定义了router的概念,可以为不同的model提供不同的db.
+    创建了router后,在settings文件中添加类似如下的字段:
+    DATABASE_ROUTERS = ['path.to.AuthRouter', 'path.to.PrimaryReplicaRouter']
+    model可以用using指定访问的数据库:
+    User.objects.using('legacy_users').get(username='fred')

@@ -1,7 +1,8 @@
 ---
 title: python的列表和元组
-category: [python]
 layout: post
+category: [tech]
+tags: [python]
 ---
 {% include JB/setup %}
 # 种类
