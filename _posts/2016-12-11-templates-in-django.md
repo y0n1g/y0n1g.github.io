@@ -22,19 +22,19 @@ django的template可以作为一个库直接使用.
 
 your_template_string的语法如下:
 
-    {{ variable }} 
-    {% statement %}
+    > {{ variable }} 
+    > {% statement %}
 
 ## 关键字
 ### if/else/endif
 + if语句不允许and or混合使用.
 + 没有else if.可以这么使用
 
-    {% if %}
-    {% else %}
-        {% if ... %}
-        {% endif %}
-    {% endif %}
+    > {% if %}
+    > {% else %}
+    >     {% if ... %}
+    >     {% endif %}
+    > {% endif %}
 
 ### for/endfor/empty
 + 可以嵌套使用for
@@ -48,17 +48,17 @@ your_template_string的语法如下:
 ### 注释
 + 单行注释
 
-    {# 注释内容 #}
+    > {# 注释内容 #}
 
 + 多行注释
 
-    {% comment %}
+    > {% comment %}
     ...
-    {% endcomment %}
+    > {% endcomment %}
 
 ### include
 
-    {% include 'somewhere/template.tpl' %}
+    > {% include 'somewhere/template.tpl' %}
 
 
 ### block/endblock/extends
@@ -72,8 +72,8 @@ extends必须在第一行,否则不工作.
 一般要先载入相应的模块,才能使用相应的过滤器.  
 比如:
 
-    {% load humanize %}
-    {{ 45000|intcomma }}
+    > {% load humanize %}
+    > {{ 45000|intcomma }}
     _在载入humanize以后,就可以它定义的intcomma了_
 
 
