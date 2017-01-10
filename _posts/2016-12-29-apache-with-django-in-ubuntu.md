@@ -73,3 +73,16 @@ tags: [ubuntu,apache,django]
     #Correct, should add the project root level
     sys.path.append("/home/user/mysite")
 
+1. Exception Value: 'WSGIRequest' object has no attribute 'user'
+很诡异的事情是,用django自带的web服务器,运行admin这个页面完全没有问题.切换到apache后就不能使用了,提示上述错误. 在StackOverflow上找到了下面这个修改可以解决问题. 同时产生的一个问题是admin的UI异常.
+
+    把settings中的MIDDLEWARE改成MIDDLEWARE_CLASSES!
+    修改后原始django自带的web服务器依然可以运行admin页面.apache也可以运行admin页面.只是显示不好看,原因在于apache已经配置了static目录,而django的admin模板使用了本地的css/js文件,导致apache无法提供这些文件.解决方法有:
+    1. 将django自带的css/js文件拷贝到apache的静态文件目录
+    2. 将django自带的文件地址配置到apache
+
+经过检查,django在1.10时做了修改,这样会导致版本不一致时变量名有差异. 在我的机器上导致上述错误的原因是root在全局安装的django版本与我自己安装的django版本不一样!  
+所以根本的解决方法是,使用一致的django版本.
+
+
+
