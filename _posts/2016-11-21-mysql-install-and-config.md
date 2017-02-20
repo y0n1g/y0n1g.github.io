@@ -32,7 +32,7 @@ SLES11.SP2
     Please report any problems with the /usr/bin/mysqlbug script!
     Starting service MySQL                                      
 
-注意,如果在ubuntu上用apt-cache安装,默认不允许root在localhost登录
+注意,如果在ubuntu上用apt-get安装,默认不允许root在localhost登录
 
     ERROR 1698 (28000): Access denied for user 'root'@'localhost'
     
@@ -51,6 +51,6 @@ SLES11.SP2
 
 赋予用户权限:
 
-    mysql> GRANT ALL on DATABASE.* to your_name;
+    mysql> GRANT ALL on your_database.* to your_name;
 
 

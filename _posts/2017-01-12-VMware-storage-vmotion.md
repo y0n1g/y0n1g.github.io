@@ -1,5 +1,5 @@
 ---
-title: VMware storage vmotion
+title: VMware 存储迁移技术: storage vmotion
 layout: post
 category: [tech]
 tags: [VMware, svmotion]

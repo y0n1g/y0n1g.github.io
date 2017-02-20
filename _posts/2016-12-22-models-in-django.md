@@ -41,10 +41,13 @@ django的model提供了各种函数来从数据库获取数据.
     Fruite.objects.filter(name__contains='melon', product_data__year=2016)
     _多重过滤_
 
-+ 用get获取一个对象
++ 用get获取一个对象.
 
-    Fruite.objects.get(name='Apple')
+    f = Fruite.objects.get(name='Apple')
     _注意,查到多个值(MultipleObjectsReturned)匹配或者没有值(DoesNotExist)匹配,都会触发异常_
+    _因此,应该用于 unique=True 的字段_
+
+在获取了对象以后,就可以用f.name等方式获取所有属性的值. 同时,所有的对象都有一些通用函数可以使用.
 
 + 限制返回数量:
 
@@ -75,16 +78,16 @@ django的model提供了各种函数来从数据库获取数据.
 表的每一列都由不同的Field类定义. Filed定义了很多共同属性,可以在声明时直接指定.比如:
 
 + primary_key. 该表的主键.如果没有任何一列(field)设置,django会自动生存一个主键.
-+ db_index. 是否在这列上创建索引.
 + unique. True时限定某列值必须唯一.并且自动会为这列创建索引.
++ db_index. 是否在这列上创建索引.
 + unique_for_date. 限定某列(DateField或DateTimeField)与本列一起唯一.
 + db_column. 可以用来自定义数据库中的表名.不用的话django会自动生成
 
 + default. 默认值或者callabe object
 + verbose. 为列设置一个可读的名字. 默认可以第一个字段用位置传递. 但是对于n-n和1-n的情形必须用verbose明确指明,因为它们的第一个字段必须是模块类.
 
-+ blank. 该字段是否可以为空,不能用于日期,时间,数字等字段. True, 在admin界面,该字段必须设置. False, 可以把该字段留空
-+ null. 是否允许字段为null.当日期,时间,数字等字段上blank设置为True时,必须把这个null也一起设置为True.
++ blank. 该字段是否可以为空. 不能完全用于日期,时间,数字等字段. True, 在admin界面,该字段必须设置. False, 可以把该字段留空. 
++ null. 是否允许字段为null.当日期,时间,数字等字段上blank设置为True时,必须把这个null也一起设置为True, 此时Django默认会用NULL来填写该字段.
 
 + choice. 可以把字段变为html中的selector类型,从列表中选择.
 + editable. 设置为True后,将不会出现在admin和任何ModelForm. 
