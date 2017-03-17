@@ -39,22 +39,31 @@ web应用是基于项目的,也可以是基于app的.app可以打包重用,更�
 
 在test_app目录下会生成一系列文件:
 
-+ urls.py 定义了url与视图(view)的映射规则.url会调用到views中的显示方法.
-+ views.py view,定义了逻辑和现实什么.由于显示的对象都是在models中定义的,因此要importmodels中的类. 其显示方法,基本可以类比于bottle中,被@route()封装的函数. 如何显示,是在templates中实现的.
-+ models.py 模式文件,用于数据库定义. django会自动映射为恰当的数据库访问.
++ models.py 模式文件,定义了对象.基于MVC模式开发的核心数据是model,这部分是客观抽象,每个对象映射到数据库的一个表. django会自动将对象的存取修改等操作映射为恰当的数据库访问. 还有独立的包SQLAlchemy是专门做这个工作的.
++ views.py view,定义业务的操作逻辑和显示的主要对象(可变部分).由于显示的对象都是在models中定义的,因此要import models中的类. 其显示方法,基本可以类比于bottle中,被@route()封装的函数. 对于不变的部分,比如页面框架等,是在templates中定义的.
++ templates文件夹. 这部分用于存放模板文件. 页面怎么漂亮,是在这里实现的.
++ satic文件夹. 用于存放静态文件,比如图片,css等.
++ urls.py 定义了url与视图(view)的映射规则,类似于API的定义. url会调用到views中的显示方法. 至于使用哪个模板,一般也是传递给views的.
 + admin.py 管理界面视图.这种视图用admin.site.register注册,而不是用urls进行映射.
 + test.py. 测试代码
 + apps.py. 应用的配置文件.
 
-同时在test_app目录下可以手动生成一些文件夹:
-
-+ static 静态文件.比如图片,css等.
-+ templates views.py和admin.py会使用这里定义的辅助模板进行显示布局.包括为views布局和为admin布局.
 
 *基于django的开发,就是实现上述python文件,并且编写一些辅助文件完成需要的功能*
 
 ## 开发顺序
-1. 设计应用:应用的url结构,数据库,显示模板等...
+1. 设计应用,主要需要考虑如下一些项:
+
+    url结构
+    对象(model)
+    操作逻辑(view)
+    显示模板等...
+
+可能还需要考虑:
+
+    多国语言支持
+
+
 1. 配置app到项目中.
 
     + 配置数据库: 这个操作在project的settings.py中.默认的数据库是SQLite.
