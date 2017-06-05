@@ -25,12 +25,25 @@ django的应用是运行在项目中的.创建项目:
 
     python manage.py migrate
     _这个操作将把settings.py中安装的app的数据库结构建好,在INSTALLED_APPS_
+    _在配置好数据库之前,这里将会默认使用sqlite, 在manage.py的同级目录创建sqlite3_
     _老版本的命令是syncdb_
 
 创建管理员帐户
 
     python manage.py createsuperuser
     _需要至少8位密码_
+
+## 测试项目
+
+python manage.py runserver your_ip_or_domain:your_access_port
+example:
+python manage.py runserver 192.168.188.128:8000
+
+第一次可能会看到这样的错误:
+
+    django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '192.168.188.128:8000'. You may need to add '192.168.188.128' to ALLOWED_HOSTS.
+
+原因在于django的安全机制. 如错误提示,需要将ip添加到ALLOWED_HOSTS中,位置在mysite/settings.py
 
 ## app
 web应用是基于项目的,也可以是基于app的.app可以打包重用,更灵活一些.在项目中创建app
@@ -39,25 +52,51 @@ web应用是基于项目的,也可以是基于app的.app可以打包重用,更�
 
 在test_app目录下会生成一系列文件:
 
-+ models.py 模式文件,定义了对象.基于MVC模式开发的核心数据是model,这部分是客观抽象,每个对象映射到数据库的一个表. django会自动将对象的存取修改等操作映射为恰当的数据库访问. 还有独立的包SQLAlchemy是专门做这个工作的.
++ models.py 模式文件,定义了应用中抽象出来的数据对象.基于MVC模式开发的核心数据是model,这部分是客观抽象,每个对象映射到数据库的一个表. django会自动将对象的存取修改等操作映射为恰当的数据库访问. 还有独立的包SQLAlchemy是专门做这个工作的.
 + views.py view,定义业务的操作逻辑和显示的主要对象(可变部分).由于显示的对象都是在models中定义的,因此要import models中的类. 其显示方法,基本可以类比于bottle中,被@route()封装的函数. 对于不变的部分,比如页面框架等,是在templates中定义的.
 + templates文件夹. 这部分用于存放模板文件. 页面怎么漂亮,是在这里实现的.
 + satic文件夹. 用于存放静态文件,比如图片,css等.
-+ urls.py 定义了url与视图(view)的映射规则,类似于API的定义. url会调用到views中的显示方法. 至于使用哪个模板,一般也是传递给views的.
++ urls.py 定义了url与视图(view)的映射规则,类似于API的定义. url会调用到views中的显示方法. 至于使用哪个模板,可以在这里传递给views的.
 + admin.py 管理界面视图.这种视图用admin.site.register注册,而不是用urls进行映射.
 + test.py. 测试代码
-+ apps.py. 应用的配置文件.
++ apps.py. 应用的配置文件.这个文件需要手工生成.
 
 
-*基于django的开发,就是实现上述python文件,并且编写一些辅助文件完成需要的功能*
+*基于django的应用开发,就是实现上述python文件,并且编写一些辅助文件完成需要的功能的过程*
 
-## 开发顺序
-1. 设计应用,主要需要考虑如下一些项:
+## 应用开发顺序
+url, 操作逻辑, 对象等, 都需要一起全盘考虑.
 
-    url结构
-    对象(model)
-    操作逻辑(view)
-    显示模板等...
+1. url结构.
+
+首先要定义url结构,就是应用的API. 在app目录下创建urls.py. 内容类似:
+
+    from django.conf.urls import url
+    from . import views
+    app_name = 'your_app_name'
+    urlpatterns = [
+        url(r'^$', views.index,),
+        url(r'^api_1/(\d+)/$', views.api_1,),
+    ]
+
+    _注意,这里的正则表达式中有$.而在向project注册这个app的url时,那里没有$_
+
+1. 操作逻辑入口和显示入口(view)
+
+在app目录下有views.py. 需要将上述的在urls中映射的回调函数在这里实现.
+
+    from django.http import HttpResponse
+    def index(request):
+        return HttpResponse("Hello Django!")
+
+    def index(request, digit):
+        return HttpResponse("print %d !"%(digit))
+
+
+1. 业务操作对象(model)
+
+1. 显示模板等...
+
 
 可能还需要考虑:
 
@@ -92,11 +131,26 @@ web应用是基于项目的,也可以是基于app的.app可以打包重用,更�
 
 至此,应用已经开发完毕. 问题在于,各个文件模块,都有一些小技巧需要掌握,这样才能做到事半功倍地快速开发系统. 这需要深入了解django的各个辅助模块,才能充分利用其功能.
 
+## 将app添加到project中
+
+将app添加到project中:
+
+    INSTALLED_APPS in mysite/settings.py
+
+将app的url规则添加到project中:
+
+    urlpatterns in mysite/urls.py
+
+    型如:
+    url(r'^your_app_portal/', include('your_app_portal.urls')),
+    _注意,上述正则表达式中,没有$.用这种方法, 可以任意将应用放到一个自定义的your_app_portal中,可以随意改变(最好别变),而不会影响app的逻辑._
+
+
 ## 访问时发生了什么
 当访问一个定义了view的URL时，Django 根据 ROOT_URLCONF 的设置装载 URLconf 。 然后按顺序逐个匹配URLconf里的URLpatterns，直到找到一个匹配的。当找到这个匹配的URLpatterns就调用相关联的view函数，并把 HttpRequest 对象作为第一个参数。视图函数返回一个HttpResponse. Django转换HttpResponse为一个适合的HTTP response， 以Web page显示出来.
 
 
-## app中的一下tips
+## app中的一些tips
 ### model.py
 + 注意为其创建unicode处理. 
 默认的例子只是使用__str__处理ascii.但是在真实使用中,不应该定义__str__,Model会正确处理.所以,只定义__unicode__即可!
@@ -173,7 +227,6 @@ django的表单类在django.forms. 其使用方法类似models,每个字段也�
 + 每个model是一个class,继承自django.db.models.Model.
 + model的每个字段(models.Field)对于那个表中的一列
 + 作为持久化层,DB的访问被django提供的API所屏蔽了.直接使用API.
-
 
 
 

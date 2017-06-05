@@ -5,7 +5,7 @@ category: [tech]
 tags: [django,database]
 ---
 {% include JB/setup %}
-#环境
+# 环境
 + MySQL
 + Django
 

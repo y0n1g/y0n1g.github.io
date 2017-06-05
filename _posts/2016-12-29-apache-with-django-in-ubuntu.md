@@ -26,10 +26,12 @@ tags: [ubuntu,apache,django]
         start_response(status, response_headers)
         return [output]
    
-1. 在为wsgi.conf添加配置:
+1. 在为/etc/apache2/modes-enabled/wsgi.conf添加配置:
 
     # /etc/apache2/mod-available/wsgi.conf
+    # all the access to http:/*****/myapp would be routed to sample.py
     WSGIScriptAlias /myapp /home/h/sample.py
+    WSGIPythonPath /home/h
     <Directory /home/h>
         <Files sample.py>
             Require all granted
@@ -44,12 +46,13 @@ tags: [ubuntu,apache,django]
     1. ubuntu文档
  
 1. 把sample.py的路径改为你创建的project的wsgi.py
+wsgi.py由django自动生成,默认位置是与settings.py在一起.因此在修改路径时,要注意WSGIPythonPath应该添加的是manage.py所在的目录,而WSGIScriptAlias指向的是settings.py所在的目录.
 
 # 大功告成!
 呃... 稍等. 可能还是会遇到一些问题. 可以参考一下下面我总结的tips
 
 # 某些可能的错误和tips!
-1. 如果有异常,把apache的LogLevle设置为info, 并检查(在ubuntu16.04上)/var/log/apache2下的日志文件.
+1. 如果有异常,把apache的LogLevle(/etc/apache2/apache2.conf)设置为info, 并检查(在ubuntu16.04上)/var/log/apache2下的日志文件.
 
 1. ImportError: No module named django.core.wsg
 可能是你用普通用户安装了django这个模块,而不是用系统用户.这将导致django这个模块只能给特定用户使用.  
@@ -84,5 +87,12 @@ tags: [ubuntu,apache,django]
 经过检查,django在1.10时做了修改,这样会导致版本不一致时变量名有差异. 在我的机器上导致上述错误的原因是root在全局安装的django版本与我自己安装的django版本不一样!  
 所以根本的解决方法是,使用一致的django版本.
 
+
+# 其他平台
+各种平台, 一般都有apache2. 但是希望的python版本, mod_wsgi, django就不一定都有了. 
+如果系统没有原生支持django(用zypper/apt等等可以安装的), 那也可以用python自带的pip系统来安装django. 这种情况下的兼容性问题就需要人肉解决了. 
+mod_wsgi,不同平台的支持也不一样.google解决吧. 
+对于SLES,主流软件往往会自己支持软件仓库.比如,MySQL对SLES可以通过添加MySQL自身的软件仓库来维护:
+https://dev.mysql.com/doc/mysql-sles-repo-quick-guide/en/
 
 
