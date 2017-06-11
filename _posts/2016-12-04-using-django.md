@@ -127,7 +127,7 @@ url, 操作逻辑, 对象等, 都需要一起全盘考虑.
 
 1. 编写视图文件views.py. 同时可能需要在template下创建辅助的template文件.
 1. 将views.py注册到your_app的urls.py中以便用户访问.
-1. 还将your_app的视图访问规则,注册到项目中. 在项目的urls.py的urlpatterns字段注册. 而项目是通过settings.py中的ROOT_URLCONF指定了本项目有哪些url是使用的.:w
+1. 还将your_app的视图访问规则,注册到项目中. 在项目的urls.py的urlpatterns字段注册. 而项目是通过settings.py中的ROOT_URLCONF指定了本项目有哪些url是使用的.
 
 至此,应用已经开发完毕. 问题在于,各个文件模块,都有一些小技巧需要掌握,这样才能做到事半功倍地快速开发系统. 这需要深入了解django的各个辅助模块,才能充分利用其功能.
 
