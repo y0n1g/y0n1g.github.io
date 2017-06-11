@@ -7,77 +7,13 @@ tags: [django,python]
 {% include JB/setup %}
 django的model提供了各种函数来与数据库交互. 这一层叫做ORM.  
 有了这一层,对数据的增删改查就会比较方便.
+model屏蔽了对底层数据库的操作,为用户提供了统一的数据模型和接口.
 
-
-+ 创建对象和保存
-
-    fruit = Fruit.objects.create(name='Apple')
-    _会自动保存!_
-    fruit2 = Fruit(name='Pear')
-    _注意,不会自动保存!_
-    fruit.save()
-
+# model
 
 ## 表定义
 每个models.Model,都会被Django创建一个表. 表的字段由models.Field参数来定义.Field有很多种,对应数据库的不同数据类型.
     
-## 查询
-通过Model的Manager,用QuerySet查询.每个model至少有一个Manager,默认叫做objects.
-
-    Fruite.objects
-
-+ 用all获取所有项
-
-    Fruite.objects.all()
-
-+ 用filter获取某种过滤条件的项*集合*
-
-    Fruite.objects.filter(product_data__year=2016)
-    Fruite.objects.filter(name__startswith='A')
-    Fruite.objects.filter(name__endwith='r')
-    Fruite.objects.filter(name__exact='Apple')
-    _exact默认可以省略_
-    Fruite.objects.filter(name__iexact='apple')
-    _大小写忽略_
-    Fruite.objects.filter(name__contains='melon')
-    _LIKE_
-    Fruite.objects.filter(name__icontains='melon')
-    _大小写无关的LIKE_
-    Fruite.objects.filter(name__contains='melon', product_data__year=2016)
-    _多重过滤_
-
-+ 用get获取一个对象.
-
-    f = Fruite.objects.get(name='Apple')
-    _注意,如果查询到多个值(MultipleObjectsReturned)匹配或者没有值(DoesNotExist)匹配,都会触发异常_
-    _因此,应该用于 unique=True 的字段_
-
-在获取了对象以后,就可以用f.name等方式获取所有属性的值. 同时,所有的对象都有一些通用函数可以使用.
-
-+ 限制返回数量:
-
-    Fruite.objects.all(origin='北京')[:30]
-    Fruite.objects.all()[30:60]
-    _负数索引不支持: [-1]_
-
-+ 用order_by获取经过排序的对象
-
-    Fruite.objects.order_by('origin')
-    Fruite.objects.order_by('-origin')
-    _逆向排序_
-    Fruite.objects.order_by('origin', 'name')
-
-+ 可以连锁查询
-
-    Publisher.objects.filter(country="U.S.A.").order_by("-name")
-
-+ 删除
-
-    Fruite.objects.get(name='Apple').delete()
-    _删除一个_
-    Publisher.objects.filter(country="U.S.A.").delete()
-    _删除很多_
-
 
 ## Field的共同属性(Attribute)
 表的每一列都由不同的Field类定义. Filed定义了很多共同属性,可以在声明时直接指定.比如:
@@ -201,3 +137,96 @@ swappable.
 
 + ManyToManyField(othermodel, **options). 用于n-n的关系.多对多的关系简单来说就是两张表里的数据，每一行都可以对应另外一张表里的多行数据
 
+
+# 数据库操作
++ 创建对象和保存
+
+    fruit = Fruit.objects.create(name='Apple')
+    _会自动保存!_
+    fruit2 = Fruit(name='Pear')
+    _注意,不会自动保存!_
+    fruit.save()
+
+## 查询
+
+通过Model的Manager,构造QuerySet查询,获取models的对象.每个model至少有一个Manager,默认叫做objects.
+QuerySet是数据库的对象集合,可以用0个/1个/多个filter来过滤结果.就SQL而言,QuerySet等价于SELECT, 一个filter对应于一个WHERE或LIMIT等限定语句.
+
+    Fruite.objects
+
+完整对的文档应该搜索 QuerySet API
+
+
+### 用all获取所有项
+
+    Fruite.objects.all()
+
+### 用filter获取某种过滤条件的项*集合*
+
+最常用的两种过滤方法:
+
+filter(): 返回符合过滤条件的结果
+
+exclude(): 返回不符合过滤条件的结果.
+
+
+    Fruite.objects.filter(product_data__year=2016)
+    等价于
+    Fruite.objects.all().filter(product_data__year=2016)
+    Fruite.objects.filter(name__startswith='A')
+    Fruite.objects.filter(name__endwith='r')
+    Fruite.objects.filter(name__exact='Apple')
+    _exact默认可以省略_
+    Fruite.objects.filter(name__iexact='apple')
+    _大小写忽略_
+    Fruite.objects.filter(name__contains='melon')
+    _LIKE_
+    Fruite.objects.filter(name__icontains='melon')
+    _大小写无关的LIKE_
+
+### 多重过滤
+
+    Fruite.objects.filter(name__contains='melon', product_data__year=2016)
+    _多重过滤_
+    Entry.objects.filter(
+       headline__startswith='What'
+    ).exclude(
+       pub_date__gte=datetime.date.today()
+    ).filter(
+       pub_date__gte=datetime(2005, 1, 30)
+    )
+
+### 用get获取一个对象.
+
+当确认只有一个对象时,可以用get.
+
+    f = Fruite.objects.get(name='Apple')
+    _注意,如果查询到多个值(MultipleObjectsReturned)匹配或者没有值(DoesNotExist)匹配,都会触发异常_
+    _因此,应该用于 unique=True 的字段_
+    f = Fruite.objects.get(name__icontains='melon')
+
+在获取了对象以后,就可以用f.name等方式获取所有属性的值. 同时,所有的对象都有一些通用函数可以使用.
+
++ 限制返回数量:
+
+    Fruite.objects.all(origin='北京')[:30]
+    Fruite.objects.all()[30:60]
+    _负数索引不支持: [-1]_
+
++ 用order_by获取经过排序的对象
+
+    Fruite.objects.order_by('origin')
+    Fruite.objects.order_by('-origin')
+    _逆向排序_
+    Fruite.objects.order_by('origin', 'name')
+
++ 可以连锁查询
+
+    Publisher.objects.filter(country="U.S.A.").order_by("-name")
+
++ 删除
+
+    Fruite.objects.get(name='Apple').delete()
+    _删除一个_
+    Publisher.objects.filter(country="U.S.A.").delete()
+    _删除很多_
