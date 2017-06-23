@@ -34,8 +34,8 @@ model屏蔽了对底层数据库的操作,为用户提供了统一的数据模�
 + db_index. True时是将在这列上创建索引.
 + default. 默认值或者callabe object. 注意,不能是mutable对象,否则会指向同一个对象;解决方法是用函数返回一个mutable对象.
 
-+ blank. 该字段是否可以为空. 不能完全用于日期,时间,数字等字段. True, 在admin界面,该字段必须设置. False, 可以把该字段留空. 
-+ null. 是否允许字段为null.当日期,时间,数字等字段上blank设置为True时,必须把这个null也一起设置为True, 此时Django默认会用NULL来填写该字段.
++ blank. 默认False.是否允许该字段为空,就是说添加一行数据时是否可以不设置这个值.对于不是必须的字段,最好设置为True. 这是设计字段时必须考虑的问题. 对于日期,时间,数字等字段,仅仅设置blank还不够,还需要null字段.  注意, 对于False的Field,每次update时都必须设置这个值! 在实际运行中, 没有设置会导致exception. 在apache环境中, 这个异常只能在apache的error_log中发现.
++ null. 是否允许日期,时间,数字等字段为null. 注意,不要用在基于 *string* 的类型上, 比如CharField和TextField. 当日期,时间,数字等字段上blank设置为True时,必须把这个null也一起设置为True, 此时Django默认会用NULL来填写该字段. 注意,GenericIPAddressField也需要跟日期时间一样对待,也需要设置这个值. 对于ForeignKey,也需要设置这个值. 是不是说,除了string以外其他字段需要时都得设置?
 
 + choice. 可以把字段变为html中的selector类型,从列表中选择.
 + editable. 默认为True.设置为False后,将不会出现在admin和任何ModelForm. 
@@ -50,7 +50,7 @@ model屏蔽了对底层数据库的操作,为用户提供了统一的数据模�
 
 ### 其他
 + BinaryField.二进制类型. 可以存储字节数据. 注意不要用这个存储文件. 
-+ EmailField(max_length=254, **options). 就算一个CharField,用EmailValidator验证输入.
++ EmailField(max_length=254, **options). 就是一个CharField,用EmailValidator验证输入.
 + GenericIPAddressField(protocol='both', unpack_ipv4=False, **options). 
 + SlugField(max_length=50, **options).报纸术语,只包含字符,数字,-和_.一般用于URL.
 + URLField(max_length=200)
@@ -66,7 +66,7 @@ model屏蔽了对底层数据库的操作,为用户提供了统一的数据模�
 + _CommaSeparatedIntegerField_ 在1.9后就失效了. 现在的建议方法是使用CharField,再加上validator=[validate_comma_separated_integer_list]
 
 ### 日期和时间
-+ DateField(auto_now=False, auto_now_add=False).  auto_now会在用方法Model.save()时每次更新数据时(但是其他方法不管用. 比如QuerySet.update()),自动设置为当前日期.可以用于'最近更新'这种日期戳.  auto_now_add在第一次创建时把日期设为现在. 注意,duto_now/auto_now_add/default三个值一起两两互斥,声明field时只能用其中一个.
++ DateField(auto_now=False, auto_now_add=False).  auto_now会在用方法Model.save()时每次更新数据时(但是其他方法不管用. 比如QuerySet.update()),自动设置为当前日期.可以用于'最近更新'这种日期戳.  auto_now_add在第一次创建时把日期设为现在. 注意,auto_now/auto_now_add/default三个值一起两两互斥,声明field时只能用其中一个.
 + DateTimeField(auto_now=False, auto_now_add=False). 日期和时间.
 + DurationField. 用于存储时间长度.对应python的timedelta.
 + TimeField(auto_now=False, auto_now_add=False)
@@ -139,13 +139,34 @@ swappable.
 
 
 # 数据库操作
-+ 创建对象和保存
+
+## 创建对象和保存
 
     fruit = Fruit.objects.create(name='Apple')
     _会自动保存!_
     fruit2 = Fruit(name='Pear')
     _注意,不会自动保存!_
     fruit.save()
+
+## 关系添加
+
+使用add函数,参考Making queries
+
+    >>> from blog.models import Entry
+    >>> entry = Entry.objects.get(pk=1)
+    >>> cheese_blog = Blog.objects.get(name="Cheddar Talk")
+    >>> entry.blog = cheese_blog  # 这篇entry是cheese_blog, n-1
+    >>> entry.save()
+
+    >>> from blog.models import Author
+    >>> joe = Author.objects.create(name="Joe")
+    >>> entry.authors.add(joe)
+
+    >>> john = Author.objects.create(name="John")
+    >>> paul = Author.objects.create(name="Paul")
+    >>> george = Author.objects.create(name="George")
+    >>> ringo = Author.objects.create(name="Ringo")
+    >>> entry.authors.add(john, paul, george, ringo)  # n-n
 
 ## 查询
 
@@ -154,14 +175,16 @@ QuerySet是数据库的对象集合,可以用0个/1个/多个filter来过滤结�
 
     Fruite.objects
 
-完整对的文档应该搜索 QuerySet API
+完整的文档应该搜索 QuerySet API
+
+   SomeModel.objects.filter(...).exists() # 检查过滤项是否为空. 
 
 
 ### 用all获取所有项
 
     Fruite.objects.all()
 
-### 用filter获取某种过滤条件的项*集合*
+### 用filter获取某种过滤条件的项\*集合\*
 
 最常用的两种过滤方法:
 
@@ -176,6 +199,7 @@ exclude(): 返回不符合过滤条件的结果.
     Fruite.objects.filter(name__startswith='A')
     Fruite.objects.filter(name__endwith='r')
     Fruite.objects.filter(name__exact='Apple')
+    Fruite.objects.filter(name='Apple')
     _exact默认可以省略_
     Fruite.objects.filter(name__iexact='apple')
     _大小写忽略_
@@ -230,3 +254,173 @@ exclude(): 返回不符合过滤条件的结果.
     _删除一个_
     Publisher.objects.filter(country="U.S.A.").delete()
     _删除很多_
+
+## 查询时的一些有用的函数
+
+### 返回queryset的函数
+
+#### select_related()
+
+    对于n-1或者1-1的关系,如果后续操作需要用到其他指向的object,可以再filter/get时直接用select_related这个函数预先查询其他object.这样可以减少db的访问次数.
+
+#### prefetch_related()
+
+    类似select_related,但是用于n-n的情况. 
+
+#### defer()
+
+    当filter返回的结果,Fields很长又不会使用时,就用defer告诉Django这些字段应该延迟获取.这是高级优化函数,只有在仔细分析了查询过程和处理过程时并且做了性能比较时,才考虑使用.
+    
+    Entry.objects.defer("headline", "body")
+    # Defers both the body and headline fields.
+    Entry.objects.defer("body").filter(rating=5).defer("headline")
+
+#### only()
+
+    类似defer,作用相反.
+
+#### using()
+
+    当有多个db可以使用时,用using来指明在哪个db上做操作.
+
+
+#### select_for_update()
+  
+锁定相应行,事务(transaction)结束.
+    
+    entries = Entry.objects.select_for_update().filter(author=request.user)
+    
+其他新的事务会被阻塞.nowait=True可以不阻塞,不过在对queryset做evaluate时,冲突的行会报DatabaseError异常.  *mysql* 不支持nowait,传入nowait会导致DatabaseError异常.
+    
+貌似不能工作在automatic commit状态?
+
+### 不返回queryset的函数
+
+这些函数不使用cache.
+    
+#### get()
+    
+返回一行. 当确认只有一行时,也可以不参数.
+    
+    entry = Entry.objects.filter(...).exclude(...).get()
+    
+#### create()
+
+创建一行. 如下两种方法一样:
+    
+    p = Person.objects.create(first_name="Bruce", last_name="Springsteen"
+    
+    p = Person(first_name="Bruce", last_name="Springsteen")
+p.save(force_insert=True)
+    
+#### get_or_create()
+    
+#### update_or_create()
+
+    obj, created = Person.objects.update_or_create(
+        first_name='John', last_name='Lennon',
+        defaults={'first_name': 'Bob'},
+    )
+
+#### bulk_create()
+
+#### count()
+
+满足queryset的数量.如果只需要查看总数,就用这个函数; 如果需要iterate每个元素,还是可以用len()
+
+    # Returns the total number of entries in the database.
+    Entry.objects.count()
+    
+    # Returns the number of entries whose headline contains 'Lennon'
+    Entry.objects.filter(headline__contains='Lennon').count()
+
+#### in_bulk()
+
+
+
+#### iterator()
+
+Django的queryset有cache的功能.而iterator不使用.
+
+#### latest()
+
+latest(field_name=None)
+
+返回field_name字段(日期时间)最新的行.
+
+    Entry.objects.latest('pub_date')
+
+如果Meta中get_latest_by有设置,则field_name字段可以省略.
+同get()一样,earliest()和latest()也可能返回DoesNotExist异常.
+
+#### earliest()
+
+#### first()
+
+#### last()
+
+#### aggregate()
+
+各种聚合统计方法.
+
+#### exists()
+
+如果只检查存在性,就用这个函数.
+    
+    if some_queryset.exists():
+    ...
+    
+如果在检查了存在以后,还要对内容做进一步的处理,就应该直接检查.
+
+    if some_queryset:
+    ...
+
+#### update()
+
+它会返回影响了的行数.
+
+#### delete()
+
+
+### Field查询
+
+Field查询用于get(),filter()和exclude()三个函数, 对应于SQL的WHERE语句.
+
+#### exact
+
+    Entry.objects.get(id__exact=14)
+    Entry.objects.get(id__exact=None)
+
+    SELECT ... WHERE id = 14;
+    SELECT ... WHERE id IS NULL;
+
+#### iexact
+
+大小写无关的exact
+
+
+#### contains
+
+#### icontains
+
+#### in
+
+在列表中.
+
+    Entry.objects.filter(id__in=[1, 3, 4])
+
+    SELECT ... WHERE id IN (1, 3, 4);
+
+#### gt/gte/lt/lte
+
+#### startswith/istartswith
+
+#### endswith/iendswith
+
+#### range/date/year/month/day/week_day/hour/minute/second/
+
+#### isnull
+
+#### regex/iregex
+
+

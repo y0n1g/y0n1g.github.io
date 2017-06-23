@@ -15,7 +15,7 @@ Django的设置文件settings.py,是在创建project时自动生成的.
 在实际使用中,需要注意的一些变量:
 
 
-1. TIME_ZONE
+# TIME_ZONE
 
     默认值是 'UTC'. 这个值得设置应该跟当前的服务器的timezone一致.而很可能服务器设置的时区不是UTC.
     比如在SLES12系统上,查看当前时间:
@@ -48,5 +48,8 @@ Django的设置文件settings.py,是在创建project时自动生成的.
 
 
 这个值得设置很重要.具体可以参考django官方文档关于[Settings](https://docs.djangoproject.com/en/1.11/ref/settings/)
+
+
+# DATABASES
 
 
