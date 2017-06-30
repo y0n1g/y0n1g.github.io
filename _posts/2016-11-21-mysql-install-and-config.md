@@ -35,6 +35,16 @@ SLES11.SP2
 注意,如果在ubuntu上用apt-get安装,默认不允许root在localhost登录
 
     ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+
+解决方法是, 使用如下命令登录后, 重新给root设置权限:
+
+    sudo mysql -u root
+    DROP USER 'root'@'localhost';
+    CREATE USER 'root'@'%' IDENTIFIED BY 'your_password';
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
+    FLUSH PRIVILEGES;
+
+还有其他方法,可以参考[这些文档](https://askubuntu.com/questions/766334/cant-login-as-mysql-user-root-from-normal-user-account-in-ubuntu-16-04)
     
 # 开始使用:
 现在就可以用mysql进入交互式界面了:
