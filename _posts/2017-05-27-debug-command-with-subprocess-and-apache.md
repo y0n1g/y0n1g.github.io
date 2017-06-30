@@ -13,9 +13,9 @@ tags: [django,python]
 如果用了Shell=True, 则报告'Operation failed. Error code: 0x1000002'错误.
 
 
-
-
-调查发现, uemcli是一个sh脚本, 其封装的bin文件需要使用添加'/opt/emc/uemcli/lib'到LD_LIBRARY_PATH.
+调查发现, uemcli是一个sh脚本, 其封装的bin文件需要使用添加'/opt/emc/uemcli/lib'到LD_LIBRARY_PATH.同时需要添加一个自定义的变量到环境变量.
 
 apache2在SLES12上是以用户wwwrun运行的, 这个用户没有交互式sh.
 而uemcli需要在用户的目录下创建.emc目录, 并且将certificate文件放在里面.
+
+

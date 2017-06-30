@@ -56,10 +56,10 @@ web应用是基于项目的,也可以是基于app的.app可以打包重用,更�
 + views.py view,定义业务的操作逻辑和显示的主要对象(可变部分).由于显示的对象都是在models中定义的,因此要import models中的类. 其显示方法,基本可以类比于bottle中,被@route()封装的函数. 对于不变的部分,比如页面框架等,是在templates中定义的.
 + templates文件夹. 这部分用于存放模板文件. 页面怎么漂亮,是在这里实现的.
 + satic文件夹. 用于存放静态文件,比如图片,css等.
-+ urls.py 定义了url与视图(view)的映射规则,类似于API的定义. url会调用到views中的显示方法. 至于使用哪个模板,可以在这里传递给views的.
++ urls.py 定义了url与视图(view)的映射规则,类似于API的定义. url会调用到views中的显示方法. 至于使用哪个模板,可以在这里传递给views的.新版django-admin不再生成这个文件,需要手工生成.
 + admin.py 管理界面视图.这种视图用admin.site.register注册,而不是用urls进行映射.
 + test.py. 测试代码
-+ apps.py. 应用的配置文件.这个文件需要手工生成.
++ apps.py. 应用的配置文件.新版django-admin已经不再生成这个文件了.
 
 
 *基于django的应用开发,就是实现上述python文件,并且编写一些辅助文件完成需要的功能的过程*
@@ -106,7 +106,14 @@ url, 操作逻辑, 对象等, 都需要一起全盘考虑.
 1. 配置app到项目中.
 
     + 配置数据库: 这个操作在project的settings.py中.默认的数据库是SQLite.
-    + 配置项目识别app: 在settings.py的INSTALLED_APPS中设置
+    + 配置项目识别app: 在settings.py的INSTALLED_APPS中设置. 假设app叫做myapp,则这样写:
+    INSTALLED_APPS = (
+    'myapp',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    ...
+    )
+
 
 1. 设计应用的数据库和表.
 
@@ -127,7 +134,7 @@ url, 操作逻辑, 对象等, 都需要一起全盘考虑.
 
 1. 编写视图文件views.py. 同时可能需要在template下创建辅助的template文件.
 1. 将views.py注册到your_app的urls.py中以便用户访问.
-1. 还将your_app的视图访问规则,注册到项目中. 在项目的urls.py的urlpatterns字段注册. 而项目是通过settings.py中的ROOT_URLCONF指定了本项目有哪些url是使用的.:w
+1. 还将your_app的视图访问规则,注册到项目中. 在项目的urls.py的urlpatterns字段注册. 而项目是通过settings.py中的ROOT_URLCONF指定了本项目有哪些url是使用的.
 
 至此,应用已经开发完毕. 问题在于,各个文件模块,都有一些小技巧需要掌握,这样才能做到事半功倍地快速开发系统. 这需要深入了解django的各个辅助模块,才能充分利用其功能.
 
